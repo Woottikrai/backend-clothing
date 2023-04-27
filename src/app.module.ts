@@ -15,7 +15,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (configService: ConfigService) => {
         return {
           type: 'postgres',
-          autoLoadEntities: true,
+          entities: [__dirname + '/entities/*.entity{.ts,.js}'],
+          autoLoadEntities: false,
           synchronize: true,
           host: configService.get('DB_HOST'),
           port: configService.get('DB_PORT'),
