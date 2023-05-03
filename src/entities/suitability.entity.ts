@@ -13,7 +13,7 @@ import { Product } from './product.entity';
 @Entity('suitability')
 export class Suitability extends Base {
   @Column()
-  suitability: string;
+  suitability_name: string;
 
   @OneToMany(() => Product, (product) => product.suitability, { cascade: true })
   product: Product[];

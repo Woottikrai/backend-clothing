@@ -25,9 +25,9 @@ export class User extends Base {
   email: string;
 
   @Column({ length: 150 })
-  passWord: string;
+  password: string;
 
-  @Column()
+  @Column({ nullable: false })
   img: string;
 
   @Column()
