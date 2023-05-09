@@ -15,6 +15,7 @@ import { Base } from './base.entity';
 import { Role } from './role.entity';
 import { Size } from './size.entity';
 import { Cart } from './cart.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('user')
 export class User extends Base {
@@ -27,19 +28,22 @@ export class User extends Base {
   @Column({ length: 150 })
   password: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   img: string;
 
-  @Column()
+  @Column({ nullable: true })
   tel: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @ManyToOne(() => Role, (role) => role.user)
+  @ManyToOne(() => Role, (role) => role.user, { nullable: true })
   role: Role;
+  @Exclude()
+  roleId: number;
 
-  @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
-  @JoinColumn()
-  cart: Relation<Cart>;
+  @OneToMany(() => Cart, (cart) => cart.user, { cascade: true, nullable: true })
+  cart: Cart;
+  @Exclude()
+  cartId: number;
 }

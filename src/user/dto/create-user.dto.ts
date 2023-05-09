@@ -26,3 +26,17 @@ export class CreateUserDto {
   @ApiProperty()
   cartId: number;
 }
+
+export class Register {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  password: string;
+
+  @ApiProperty()
+  roleId: number;
+}

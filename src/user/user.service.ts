@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, Register } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UpdatePassword } from './dto/update-password.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import { error } from 'console';
 
 @Injectable()
@@ -15,19 +15,17 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createUser(body: CreateUserDto): Promise<User> {
+  async registerUser(body: Register): Promise<User> {
     try {
-      const { name, email, tel, address, img } = body;
-      const hashPassWord = await this.hashPassWord(body.password);
-      const createUser = await this.userRepository.save({
+      const { name, email, password, roleId } = body;
+      const hashPassWord = await this.hashPassWord(password);
+      const registerUser = await this.userRepository.save({
         name: name,
         email: email,
-        tel: tel,
-        img: img,
-        address: address,
         password: hashPassWord,
+        roleId: roleId,
       });
-      return createUser;
+      return registerUser;
     } catch (error) {
       throw error;
     }
@@ -50,11 +48,26 @@ export class UserService {
     }
   }
 
+  async updatePassword(id: number, body: UpdatePasswordDto) {
+    try {
+      const { password } = body;
+      const updateHash = await this.hashPassWord(password);
+      const updatePassword = await this.userRepository.update(id, {
+        password: updateHash,
+      });
+      return updatePassword;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async findUserAll() {
     try {
-      const findUserAll = await this.userRepository.find({
-        relations: ['role', 'user.role', 'cart', 'user.cart'],
-      });
+      const findUserAll = await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'ur')
+        .leftJoinAndSelect('user.cart', 'uc')
+        .getMany();
       return findUserAll;
     } catch (error) {
       throw error;

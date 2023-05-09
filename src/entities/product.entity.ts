@@ -58,7 +58,7 @@ export class Product extends Base {
   @Exclude()
   colorId: number;
 
-  @OneToOne(() => Stock, (stock) => stock.product, { cascade: true })
+  @OneToOne(() => Stock, (stock) => stock.product)
   @JoinColumn()
   stock: Relation<Stock>;
   @Column()

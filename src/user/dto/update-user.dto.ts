@@ -8,9 +8,6 @@ export class UpdateUserDto {
   email?: string;
 
   @ApiProperty()
-  password?: string;
-
-  @ApiProperty()
   img?: string;
 
   @ApiProperty()
@@ -18,10 +15,4 @@ export class UpdateUserDto {
 
   @ApiProperty()
   tel?: string;
-
-  @ApiProperty()
-  roleId?: number;
-
-  @ApiProperty()
-  cartId?: number;
 }
