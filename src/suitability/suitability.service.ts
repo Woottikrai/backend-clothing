@@ -55,4 +55,13 @@ export class SuitabilityService {
       throw error;
     }
   }
+
+  async deleteSuitability(id: number) {
+    try {
+      const deleteSuitability = await this.suitabilityRepository.softDelete(id);
+      return deleteSuitability;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Size } from 'src/entities/size.entity';
 import { Repository } from 'typeorm';
 import { CreateSizeDto, UpdateSizeDto } from './dto/create-size.dto';
-import { get } from 'http';
 
 @Injectable()
 export class SizeService {

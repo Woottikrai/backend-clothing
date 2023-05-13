@@ -12,21 +12,21 @@ import { ApiTags } from '@nestjs/swagger';
 import { SizeService } from './size.service';
 import { CreateSizeDto, UpdateSizeDto } from './dto/create-size.dto';
 
-@ApiTags()
-@Controller()
+@ApiTags('size')
+@Controller('size')
 export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 
-  @Post()
-  async createSize(body: CreateSizeDto) {
+  @Post('create-size')
+  async createSize(@Body() body: CreateSizeDto) {
     try {
-      return await this.createSize(body);
+      return await this.sizeService.createSize(body);
     } catch (error) {
       throw error;
     }
   }
 
-  @Get()
+  @Get('get-sizeAll')
   async getSizeAll() {
     try {
       return await this.sizeService.getSizeAll();
@@ -35,7 +35,7 @@ export class SizeController {
     }
   }
 
-  @Get()
+  @Get('get-sizeOne')
   async getSizeOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.sizeService.getSizeOne(id);
@@ -44,7 +44,7 @@ export class SizeController {
     }
   }
 
-  @Patch()
+  @Patch('update-size/:id')
   async updateSize(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateSizeDto,
@@ -56,7 +56,7 @@ export class SizeController {
     }
   }
 
-  @Delete()
+  @Delete('delete-size/:id')
   async deleteSize(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.sizeService.deleteSize(id);

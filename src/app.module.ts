@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { CartModule } from './cart/cart.module';
 import { RoleModule } from './role/role.module';
+import { SizeModule } from './size/size.module';
+import { SuitabilityModule } from './suitability/suitability.module';
+import { ProducttypeModule } from './producttype/producttype.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,8 +36,11 @@ import { RoleModule } from './role/role.module';
     UserModule,
     CartModule,
     RoleModule,
+    SizeModule,
+    SuitabilityModule,
+    ProducttypeModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
 export class AppModule {}

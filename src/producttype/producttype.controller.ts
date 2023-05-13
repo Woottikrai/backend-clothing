@@ -17,11 +17,11 @@ import {
 } from './dto/create-producttype.dto';
 
 @ApiTags('product-type')
-@Controller('')
+@Controller('product-type')
 export class ProductTypeController {
   constructor(private readonly producttypeService: ProducttypeService) {}
 
-  @Post('')
+  @Post('product-type-create')
   async createProducttype(@Body() body: CreateProducttype) {
     try {
       return await this.producttypeService.createProducttype(body);
@@ -30,7 +30,7 @@ export class ProductTypeController {
     }
   }
 
-  @Get()
+  @Get('get-product-typeAll')
   async getProducttypeAll() {
     try {
       return await this.producttypeService.getProducttype();
@@ -39,7 +39,7 @@ export class ProductTypeController {
     }
   }
 
-  @Get()
+  @Get('get-product-typeOne/:id')
   async getproducttypeOne(@Param('id', ParseArrayPipe) id: number) {
     try {
       return await this.producttypeService.getProducttypeOne(id);
@@ -48,7 +48,7 @@ export class ProductTypeController {
     }
   }
 
-  @Patch()
+  @Patch('update-product-typeOne/:id')
   async updateProducttype(
     @Param('id', ParseArrayPipe) id: number,
     @Body() body: UpdateProducttype,
@@ -60,7 +60,7 @@ export class ProductTypeController {
     }
   }
 
-  @Delete()
+  @Delete('delete-product-type/:id')
   async deleteProducttype(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.producttypeService.deleteProducttype(id);
