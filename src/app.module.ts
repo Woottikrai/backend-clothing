@@ -9,6 +9,9 @@ import { RoleModule } from './role/role.module';
 import { SizeModule } from './size/size.module';
 import { SuitabilityModule } from './suitability/suitability.module';
 import { ProducttypeModule } from './producttype/producttype.module';
+import { ColorModule } from './color/color.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +42,8 @@ import { ProducttypeModule } from './producttype/producttype.module';
     SizeModule,
     SuitabilityModule,
     ProducttypeModule,
+    ColorModule,
+    AuthenticationModule,
   ],
   controllers: [],
   providers: [AppService],

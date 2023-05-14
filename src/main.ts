@@ -12,6 +12,7 @@ async function bootstrap() {
     .setTitle('Clothing-Shop')
     .setDescription('This is API Clothing-Shop')
     .setVersion('1.0')
+    .addBearerAuth({ in: 'header', type: 'http' })
     .addTag('Clothing-Shop')
     .build();
   const document = SwaggerModule.createDocument(app, config);
@@ -24,5 +25,6 @@ async function bootstrap() {
   app.enableCors();
 
   await app.listen(3002);
+  console.log('Start at ::', await app.getUrl());
 }
 bootstrap();
