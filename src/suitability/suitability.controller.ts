@@ -20,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class SuitabilityController {
   constructor(private readonly SuitabilityService: SuitabilityService) {}
 
-  @Post('create-suitability')
+  @Post('suitability')
   async createSuitability(@Body() body: CreateSuitabilityDto) {
     try {
       return await this.SuitabilityService.createSuitability(body);
@@ -29,7 +29,7 @@ export class SuitabilityController {
     }
   }
 
-  @Get('find-suitabilityAll')
+  @Get('suitability-all')
   async getSuitabilityAll() {
     try {
       return await this.SuitabilityService.getSuitabulityAll();
@@ -38,7 +38,7 @@ export class SuitabilityController {
     }
   }
 
-  @Get('find-suitabilityOne')
+  @Get('suitability-one/:id')
   async getSuitabilityOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.SuitabilityService.getSuitabulityOne(id);
@@ -47,7 +47,7 @@ export class SuitabilityController {
     }
   }
 
-  @Patch('update-suitability')
+  @Patch('update/:id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateSuitabilityDto,
@@ -59,7 +59,7 @@ export class SuitabilityController {
     }
   }
 
-  @Delete('delete-suitability')
+  @Delete('delete/:id')
   async deletesuitability(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.SuitabilityService.deleteSuitability(id);

@@ -20,7 +20,7 @@ import { FilterQueryProduct } from './dto/filter-product.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('create-product')
+  @Post('create')
   async createProduct(@Body() body: CreateProductDto) {
     try {
       return await this.productService.createProduct(body);
@@ -29,7 +29,7 @@ export class ProductController {
     }
   }
 
-  @Get('find-product-All')
+  @Get('find-all')
   async getProductAll(@Query() filter: FilterQueryProduct) {
     try {
       const { limit, page, getPageCount } = filter;
@@ -47,7 +47,7 @@ export class ProductController {
     }
   }
 
-  @Get('find-product-One')
+  @Get('find-one/:id')
   async getProductOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.productService.getProductOne(id);
@@ -56,7 +56,7 @@ export class ProductController {
     }
   }
 
-  @Patch('update-product')
+  @Patch('update/:id')
   async updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
@@ -68,7 +68,7 @@ export class ProductController {
     }
   }
 
-  @Delete('delete-product')
+  @Delete('delete/:id')
   async deleteProduct(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.productService.deleteProduct(id);

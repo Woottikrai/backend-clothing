@@ -17,7 +17,7 @@ import { Post } from '@nestjs/common';
 export class ColorController {
   constructor(private readonly colorService: ColorSerivce) {}
 
-  @Post('color-create')
+  @Post('create')
   async createColor(@Body() body: CreateColorDto) {
     try {
       return await this.colorService.createColor(body);
@@ -26,7 +26,7 @@ export class ColorController {
     }
   }
 
-  @Get('color-getAll')
+  @Get('get-all')
   async getAllColor() {
     try {
       return await this.colorService.getColorAll();
@@ -35,7 +35,7 @@ export class ColorController {
     }
   }
 
-  @Get('color-GetOne')
+  @Get('get-one/:id')
   async getCoorOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.colorService.getClorOne(id);
@@ -44,7 +44,7 @@ export class ColorController {
     }
   }
 
-  @Patch('color-update')
+  @Patch('update/:id')
   async updateColor(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateColorDto,
@@ -56,7 +56,7 @@ export class ColorController {
     }
   }
 
-  @Delete('color-delete')
+  @Delete('delete/:id')
   async deleteColor(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.colorService.deleteColor(id);

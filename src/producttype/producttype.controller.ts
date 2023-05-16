@@ -21,7 +21,7 @@ import {
 export class ProductTypeController {
   constructor(private readonly producttypeService: ProducttypeService) {}
 
-  @Post('product-type-create')
+  @Post('producttype')
   async createProducttype(@Body() body: CreateProducttype) {
     try {
       return await this.producttypeService.createProducttype(body);
@@ -30,7 +30,7 @@ export class ProductTypeController {
     }
   }
 
-  @Get('get-product-typeAll')
+  @Get('get-all')
   async getProducttypeAll() {
     try {
       return await this.producttypeService.getProducttype();
@@ -39,7 +39,7 @@ export class ProductTypeController {
     }
   }
 
-  @Get('get-product-typeOne/:id')
+  @Get('get-one/:id')
   async getproducttypeOne(@Param('id', ParseArrayPipe) id: number) {
     try {
       return await this.producttypeService.getProducttypeOne(id);

@@ -18,7 +18,7 @@ import { UpdateRole } from './dto/update-role.dto';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Post('create-role')
+  @Post('role')
   async post(@Body() body: CreateRoleDto) {
     try {
       return await this.roleService.createRole(body);
@@ -27,7 +27,7 @@ export class RoleController {
     }
   }
 
-  @Get('get-role')
+  @Get('get-all')
   async getPosition() {
     try {
       return await this.roleService.findRoleAll();
@@ -36,7 +36,7 @@ export class RoleController {
     }
   }
 
-  @Get('get-role-one')
+  @Get('get-one/:id')
   async getPositionOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.roleService.findRoleOne(id);
@@ -44,7 +44,7 @@ export class RoleController {
       throw error;
     }
   }
-  @Patch('update-role')
+  @Patch('update/:id')
   async updatePosition(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateRole,
@@ -56,7 +56,7 @@ export class RoleController {
     }
   }
 
-  @Delete('delete-role')
+  @Delete('delete/:id')
   async deleteRole(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.roleService.deleteRole(id);

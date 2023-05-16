@@ -17,7 +17,7 @@ import { CreateSizeDto, UpdateSizeDto } from './dto/create-size.dto';
 export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 
-  @Post('create-size')
+  @Post('size')
   async createSize(@Body() body: CreateSizeDto) {
     try {
       return await this.sizeService.createSize(body);
@@ -26,7 +26,7 @@ export class SizeController {
     }
   }
 
-  @Get('get-sizeAll')
+  @Get('size-all')
   async getSizeAll() {
     try {
       return await this.sizeService.getSizeAll();
@@ -35,7 +35,7 @@ export class SizeController {
     }
   }
 
-  @Get('get-sizeOne')
+  @Get('size-one')
   async getSizeOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.sizeService.getSizeOne(id);
@@ -44,7 +44,7 @@ export class SizeController {
     }
   }
 
-  @Patch('update-size/:id')
+  @Patch('update/:id')
   async updateSize(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateSizeDto,
@@ -56,7 +56,7 @@ export class SizeController {
     }
   }
 
-  @Delete('delete-size/:id')
+  @Delete('delete/:id')
   async deleteSize(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.sizeService.deleteSize(id);
