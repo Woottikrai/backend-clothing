@@ -27,7 +27,7 @@ export class RoleController {
     }
   }
 
-  @Get('get-position')
+  @Get('get-role')
   async getPosition() {
     try {
       return await this.roleService.findRoleAll();
@@ -36,7 +36,7 @@ export class RoleController {
     }
   }
 
-  @Get('get-position-one')
+  @Get('get-role-one')
   async getPositionOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.roleService.findRoleOne(id);
@@ -44,7 +44,7 @@ export class RoleController {
       throw error;
     }
   }
-  @Patch('update-position')
+  @Patch('update-role')
   async updatePosition(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateRole,

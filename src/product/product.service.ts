@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entities/product.entity';
-import { Repository } from 'typeorm';
+import { QueryBuilder, Repository } from 'typeorm';
 import { get } from 'http';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FilterQueryProduct } from './dto/filter-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -42,25 +43,44 @@ export class ProductService {
     }
   }
 
-  async getProductAll() {
+  async getProductAll(filter: FilterQueryProduct) {
     try {
-      const getProductAll = await this.productRepository.find({
-        relations: [
-          'size',
-          'size.product',
-          'producttype',
-          'producttype.product',
-          'suitability',
-          'suitability.product',
-          'color',
-          'color.product',
-        ],
-      });
+      const { producttype, suitability, color, getOffset, pagination, limit } =
+        filter;
+      const getProductAll = this.productRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.size', 'pz')
+        .leftJoinAndSelect('product.producttype', 'pp')
+        .leftJoinAndSelect('product.suitability', 'ps')
+        .leftJoinAndSelect('product.color', 'pc');
+
+      if (producttype) {
+        getProductAll.andWhere('product.producttype =:producttype', {
+          producttype: producttype,
+        });
+      }
+
+      if (suitability) {
+        getProductAll.andWhere('product.suitability =:suitability', {
+          suitability: suitability,
+        });
+      }
+
+      if (color) {
+        getProductAll.andWhere('product.color =:color', {
+          color: color,
+        });
+      }
+
+      if (pagination) {
+        getProductAll.skip(getOffset(filter)).take(limit);
+      }
+
+      return await getProductAll.getManyAndCount();
     } catch (error) {
       throw error;
     }
   }
-
   async getProductOne(id: number) {
     try {
       const getProductOne = await this.productRepository.findOneBy({ id: id });

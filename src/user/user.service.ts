@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -50,7 +50,12 @@ export class UserService {
 
   async updatePassword(id: number, body: UpdatePasswordDto) {
     try {
-      const { password } = body;
+      const { password, oldPassword } = body;
+      const finduser = await this.findOneUser(id);
+      const compare = await bcrypt.compare(password, finduser.password);
+      if (!compare) {
+        throw new UnauthorizedException();
+      }
       const updateHash = await this.hashPassWord(password);
       const updatePassword = await this.userRepository.update(id, {
         password: updateHash,

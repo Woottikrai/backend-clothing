@@ -7,17 +7,21 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { FilterQueryProduct } from './dto/filter-product.dto';
 
-@Controller()
+@ApiTags('Product')
+@Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  async createProduct(body: CreateProductDto) {
+  @Post('create-product')
+  async createProduct(@Body() body: CreateProductDto) {
     try {
       return await this.productService.createProduct(body);
     } catch (error) {
@@ -25,16 +29,25 @@ export class ProductController {
     }
   }
 
-  @Get()
-  async getProductAll() {
+  @Get('find-product-All')
+  async getProductAll(@Query() filter: FilterQueryProduct) {
     try {
-      return await this.productService.getProductAll();
+      const { limit, page, getPageCount } = filter;
+      const [data, count] = await this.productService.getProductAll(filter);
+
+      return {
+        data: data,
+        count: count,
+        page: page,
+        limit: limit,
+        pageCount: getPageCount(limit, count),
+      };
     } catch (error) {
       throw error;
     }
   }
 
-  @Get()
+  @Get('find-product-One')
   async getProductOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.productService.getProductOne(id);
@@ -43,7 +56,7 @@ export class ProductController {
     }
   }
 
-  @Patch()
+  @Patch('update-product')
   async updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
@@ -55,7 +68,7 @@ export class ProductController {
     }
   }
 
-  @Delete()
+  @Delete('delete-product')
   async deleteProduct(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.productService.deleteProduct(id);
