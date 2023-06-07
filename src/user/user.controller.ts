@@ -37,6 +37,15 @@ export class UserController {
     }
   }
 
+  @Get('fine-one/:id')
+  async findUserOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.userService.findOneUser(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Patch('update/:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,

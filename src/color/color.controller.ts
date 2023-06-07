@@ -13,7 +13,7 @@ import { CreateColorDto, UpdateColorDto } from './dto/color.dto';
 import { Post } from '@nestjs/common';
 
 @ApiTags('color')
-@Controller('color')
+@Controller('')
 export class ColorController {
   constructor(private readonly colorService: ColorSerivce) {}
 
@@ -26,7 +26,7 @@ export class ColorController {
     }
   }
 
-  @Get('get-all')
+  @Get('color-all')
   async getAllColor() {
     try {
       return await this.colorService.getColorAll();

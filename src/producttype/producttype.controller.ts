@@ -17,7 +17,7 @@ import {
 } from './dto/create-producttype.dto';
 
 @ApiTags('product-type')
-@Controller('product-type')
+@Controller('')
 export class ProductTypeController {
   constructor(private readonly producttypeService: ProducttypeService) {}
 
@@ -30,7 +30,7 @@ export class ProductTypeController {
     }
   }
 
-  @Get('get-all')
+  @Get('producttype-all')
   async getProducttypeAll() {
     try {
       return await this.producttypeService.getProducttype();

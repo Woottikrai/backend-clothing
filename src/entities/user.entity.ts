@@ -39,6 +39,7 @@ export class User extends Base {
 
   @ManyToOne(() => Role, (role) => role.user, { nullable: true })
   role: Role;
+  @Column()
   @Exclude()
   roleId: number;
 

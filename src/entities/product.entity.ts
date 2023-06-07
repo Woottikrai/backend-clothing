@@ -17,7 +17,7 @@ import { Suitability } from './suitability.entity';
 import { Color } from './color.entity';
 import { Cart } from './cart.entity';
 import { Stock } from './stock.entity';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity('product')
 export class Product extends Base {
@@ -27,44 +27,47 @@ export class Product extends Base {
   @Column({ length: 150 })
   detail: string;
 
-  @Column()
+  @Column({ nullable: true })
   price: number;
 
-  @Column()
+  @Column({ nullable: true })
   img: string;
 
   @ManyToOne(() => Size, (size) => size.product)
   size: Size;
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   sizeId: number;
 
   @ManyToOne(() => ProductType, (productype) => productype.product)
   producttype: ProductType;
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   producttypeId: number;
 
   //วัย
   @ManyToOne(() => Suitability, (suitability) => suitability.product)
   suitability: Suitability;
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   suitabilityId: number;
 
   @ManyToOne(() => Color, (color) => color.product)
   color: Color;
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   colorId: number;
 
   @OneToOne(() => Stock, (stock) => stock.product)
   @JoinColumn()
   stock: Relation<Stock>;
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   stockId: number;
 
   @ManyToOne(() => Cart, (cart) => cart.product)
   cart: Cart;
+  @Column({ nullable: true })
+  @Expose()
+  cartId: number;
 }

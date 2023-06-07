@@ -20,7 +20,7 @@ import { FilterQueryProduct } from './dto/filter-product.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('create')
+  @Post('add-product')
   async createProduct(@Body() body: CreateProductDto) {
     try {
       return await this.productService.createProduct(body);

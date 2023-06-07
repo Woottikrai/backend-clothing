@@ -120,7 +120,7 @@ export class ProductService {
 
   async deleteProduct(id: number) {
     try {
-      const deleteProduct = await this.productRepository.softDelete(id);
+      const deleteProduct = await this.productRepository.softRemove({ id: id });
       return deleteProduct;
     } catch (error) {
       throw error;

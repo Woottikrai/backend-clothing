@@ -5,7 +5,7 @@ export class CreateCartDto {
   quantity: number;
 
   @ApiProperty()
-  productId: number;
+  productId: number[];
 
   @ApiProperty()
   statusId: number;

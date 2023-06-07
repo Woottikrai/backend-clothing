@@ -7,6 +7,3 @@ export const GetUser = createParamDecorator(
     return request.user;
   },
 );
-// export const GetUser = createParamDecorator((data, req) => {
-//   return req.data;
-// });

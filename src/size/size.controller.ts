@@ -13,7 +13,7 @@ import { SizeService } from './size.service';
 import { CreateSizeDto, UpdateSizeDto } from './dto/create-size.dto';
 
 @ApiTags('size')
-@Controller('size')
+@Controller('')
 export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 

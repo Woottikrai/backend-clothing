@@ -14,7 +14,8 @@ export class CartService {
   async creatCart(body: CreateCartDto) {
     try {
       const { quantity, productId, statusId, userId } = body;
-
+      for (const product of productId) {
+      }
       return;
     } catch (error) {
       throw error;

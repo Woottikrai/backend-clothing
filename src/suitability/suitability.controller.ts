@@ -16,7 +16,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('suitability')
-@Controller('suitability')
+@Controller('')
 export class SuitabilityController {
   constructor(private readonly SuitabilityService: SuitabilityService) {}
 
