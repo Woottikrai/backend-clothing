@@ -10,13 +10,15 @@ import {
 } from '@nestjs/common';
 import { StatusService } from './status.service';
 import { CreateStatusDto } from './dto/create-status.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller()
+@ApiTags('status')
+@Controller('status')
 export class StatusController {
   constructor(private readonly statusService: StatusService) {}
 
-  @Post()
-  async createStatus(body: CreateStatusDto) {
+  @Post('create')
+  async createStatus(@Body() body: CreateStatusDto) {
     try {
       return await this.statusService.createStatus(body);
     } catch (error) {
@@ -24,7 +26,7 @@ export class StatusController {
     }
   }
 
-  @Get()
+  @Get('get-all')
   async getStatusAll() {
     try {
       return await this.statusService.getStatusAll();
@@ -33,7 +35,7 @@ export class StatusController {
     }
   }
 
-  @Get()
+  @Get('get-one')
   async getStatusOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.statusService.getStatusOne(id);
@@ -42,7 +44,7 @@ export class StatusController {
     }
   }
 
-  @Patch()
+  @Patch('update')
   async updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: CreateStatusDto,
@@ -54,7 +56,7 @@ export class StatusController {
     }
   }
 
-  @Delete()
+  @Delete('delete')
   async deleteStatus(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.statusService.deleteStatus(id);

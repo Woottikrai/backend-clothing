@@ -5,11 +5,22 @@ export class CreateCartDto {
   quantity: number;
 
   @ApiProperty()
-  productId: number[];
+  sumPrice: number;
 
   @ApiProperty()
-  statusId: number;
+  productId: number;
 
   @ApiProperty()
   userId: number;
+}
+
+export class UpdateCaetDto {
+  @ApiProperty()
+  quantity?: number;
+
+  @ApiProperty()
+  sumPrice?: number;
+
+  @ApiProperty()
+  productId?: number;
 }

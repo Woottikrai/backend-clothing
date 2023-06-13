@@ -11,6 +11,7 @@ import { ProducttypeModule } from './producttype/producttype.module';
 import { ColorModule } from './color/color.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ProductModule } from './product/product.module';
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ProductModule } from './product/product.module';
     ColorModule,
     AuthenticationModule,
     ProductModule,
+    StatusModule,
   ],
   controllers: [],
   providers: [],
