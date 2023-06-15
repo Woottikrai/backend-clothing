@@ -21,8 +21,11 @@ export class Cart extends Base {
   @Column()
   sumPrice: number;
 
-  @OneToMany(() => Product, (product) => product.cart, { cascade: true })
-  product: Product[];
+  @ManyToOne(() => Product, (product) => product.cart)
+  product: Product;
+  @Column()
+  @Exclude()
+  productId: number;
 
   @ManyToOne(() => Status, (status) => status.cart, { nullable: true })
   status: Status;

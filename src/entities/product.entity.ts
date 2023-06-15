@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -65,9 +66,6 @@ export class Product extends Base {
   @Exclude()
   stockId: number;
 
-  @ManyToOne(() => Cart, (cart) => cart.product)
-  cart: Cart;
-  @Column({ nullable: true })
-  @Expose()
-  cartId: number;
+  @OneToMany(() => Cart, (cart) => cart.product)
+  cart: Cart[];
 }

@@ -69,33 +69,6 @@ export class CartService {
     }
   }
 
-  async updateCart(id: number, body: UpdateCaetDto) {
-    try {
-      const { quantity, sumPrice } = body;
-      const updateCart = this.cartRepository.update(id, {
-        quantity: quantity,
-        sumPrice: sumPrice,
-      });
-      return await updateCart;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async findCartByOrderId(userId: number, orderId: string, status: string) {
-    try {
-      const queryBuilder = await this.cartRepository
-        .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
-        .where('cart.orderId = :orderId', { orderId })
-        .andWhere('cart.sid = :status_name', { status })
-        .andWhere('cart.userId = :id', { userId });
-      return queryBuilder.getMany();
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async deleteFromCart(id: number) {
     try {
       const deleteFromCart = this.cartRepository.softRemove({ id });
@@ -105,13 +78,73 @@ export class CartService {
     }
   }
 
-  async getOrderForAdmin(orderId: string) {
+  async cartConfirm(userId: number, id: number[]) {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
-        .where('cart.orderId = :orderId', { orderId })
+        .leftJoinAndSelect('cart.statusId', 'sid')
+        .where('cart.userId = :id', { userId })
+        .andWhere('caer.sid  = :id', { id: 1 })
+        .groupBy('cart.orderId')
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          return this.cartRepository.update(id, {
+            statusId: (data.statusId = 2),
+          });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async cartSuccess(userId: number, id: number[]) {
+    try {
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.statusId', 'sid')
+        .addSelect('SUM(cart.sumPrice)', 'sum')
+        .where('cart.userId = :id', { userId })
+        .andWhere('caer.sid  = :id', { id: 1 })
+        .groupBy('cart.orderId')
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          return this.cartRepository.update(id, {
+            statusId: (data.statusId = 3),
+          });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //show for user
+  async findCartByOrderId(userId: number) {
+    try {
+      const queryBuilder = this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.statusId', 'sid')
+        .where('cart.orderId = :orderId')
+        .groupBy('cart.orderId')
+        .andWhere('cart.userId = :id', { userId });
+      return await queryBuilder.getMany();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOrderForAdmin() {
+    try {
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.statusId', 'sid')
         .andWhere('cart.statusId = :id', { id: 2 })
-        .groupBy('entity.status')
+        .groupBy('cart.orderId')
         .getMany();
       return queryBuilder;
     } catch (error) {
