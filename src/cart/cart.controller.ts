@@ -59,7 +59,7 @@ export class CartController {
     }
   }
 
-  @Delete('delete-from-cart')
+  @Delete('delete-from-cart/:id')
   async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.cartService.deleteFromCart(id);
