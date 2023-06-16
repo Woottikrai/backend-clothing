@@ -26,10 +26,43 @@ export class CartController {
     }
   }
 
+  @Post('cart-confirm')
+  async cartConfirm(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() orderId: string,
+  ) {
+    try {
+      return await this.cartService.cartConfirm(id, orderId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('cart-confirm')
+  async cartSuscess(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() orderId: string,
+  ) {
+    try {
+      return await this.cartService.cartSuscess(id, orderId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Get('cart/:id')
   async getCart(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.cartService.findCartByOrderId(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-from-cart')
+  async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.cartService.deleteFromCart(id);
     } catch (error) {
       throw error;
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from 'src/entities/cart.entity';
-import { QueryBuilder, Repository } from 'typeorm';
+import { And, QueryBuilder, Repository } from 'typeorm';
 import { CreateCartDto, UpdateCaetDto } from './dto/create-cart.dto';
 import { Product } from 'src/entities/product.entity';
 
@@ -78,19 +78,19 @@ export class CartService {
     }
   }
 
-  async cartConfirm(userId: number, id: number[]) {
+  async cartConfirm(userId: number, orderId: string) {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.statusId', 'sid')
-        .where('cart.userId = :id', { userId })
-        .andWhere('caer.sid  = :id', { id: 1 })
-        .groupBy('cart.orderId')
+        .where('cart.user = :id', { userId })
+        .andWhere('cart.sid  = :id', { id: 1 })
+        .andWhere('cart.orderId = :orderId', { orderId })
         .getMany();
 
       if (queryBuilder.length > 0) {
         for (const data of queryBuilder) {
-          return this.cartRepository.update(id, {
+          return this.cartRepository.update(data.id, {
             statusId: (data.statusId = 2),
           });
         }
@@ -100,20 +100,19 @@ export class CartService {
     }
   }
 
-  async cartSuccess(userId: number, id: number[]) {
+  async cartSuscess(userId: number, orderId: string) {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.statusId', 'sid')
-        .addSelect('SUM(cart.sumPrice)', 'sum')
-        .where('cart.userId = :id', { userId })
-        .andWhere('caer.sid  = :id', { id: 1 })
-        .groupBy('cart.orderId')
+        .where('cart.user = :id', { userId })
+        .andWhere('cart.sid  = :id', { id: 1 })
+        .andWhere('cart.orderId = :orderId', { orderId })
         .getMany();
 
       if (queryBuilder.length > 0) {
         for (const data of queryBuilder) {
-          return this.cartRepository.update(id, {
+          return this.cartRepository.update(data.id, {
             statusId: (data.statusId = 3),
           });
         }
