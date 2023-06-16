@@ -124,14 +124,15 @@ export class CartService {
   }
 
   //show for user
-  async findCartByOrderId(userId: number) {
+  async findCartByOrderId(id: number) {
     try {
       const queryBuilder = this.cartRepository
         .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
-        .where('cart.orderId = :orderId')
-        .groupBy('cart.orderId')
-        .andWhere('cart.userId = :id', { userId });
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('status.Id = :id', { id: 1 })
+        .andWhere('cart.userId = :id', { id });
+
       return await queryBuilder.getMany();
     } catch (error) {
       throw error;
@@ -142,8 +143,8 @@ export class CartService {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
-        .andWhere('cart.statusId = :id', { id: 2 })
+        .leftJoinAndSelect('cart.status', 'status')
+        .andWhere('status.id = :id', { id: 2 })
         .groupBy('cart.orderId')
         .getMany();
       return queryBuilder;
