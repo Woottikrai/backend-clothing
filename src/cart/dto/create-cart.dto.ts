@@ -15,12 +15,15 @@ export class CreateCartDto {
 }
 
 export class UpdateCaetDto {
-  @ApiProperty()
+  @ApiProperty({ nullable: false })
   quantity?: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: false })
   sumPrice?: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: false })
   productId?: number;
+
+  @ApiProperty({ nullable: false })
+  orderId?: string;
 }

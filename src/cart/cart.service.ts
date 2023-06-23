@@ -78,56 +78,16 @@ export class CartService {
     }
   }
 
-  async cartConfirm(userId: number, orderId: string) {
-    try {
-      const queryBuilder = await this.cartRepository
-        .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
-        .where('cart.user = :id', { userId })
-        .andWhere('cart.sid  = :id', { id: 1 })
-        .andWhere('cart.orderId = :orderId', { orderId })
-        .getMany();
-
-      if (queryBuilder.length > 0) {
-        for (const data of queryBuilder) {
-          return this.cartRepository.update(data.id, {
-            statusId: (data.statusId = 2),
-          });
-        }
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async cartSuscess(userId: number, orderId: string) {
-    try {
-      const queryBuilder = await this.cartRepository
-        .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
-        .where('cart.user = :id', { userId })
-        .andWhere('cart.sid  = :id', { id: 1 })
-        .andWhere('cart.orderId = :orderId', { orderId })
-        .getMany();
-
-      if (queryBuilder.length > 0) {
-        for (const data of queryBuilder) {
-          return this.cartRepository.update(data.id, {
-            statusId: (data.statusId = 3),
-          });
-        }
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
   //show for user
   async findCartByOrderId(id: number) {
     try {
       const queryBuilder = this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.Id = :id', { id: 1 })
         .andWhere('cart.userId = :id', { id });
@@ -138,12 +98,85 @@ export class CartService {
     }
   }
 
+  // user ยืนยันการสั่งซื้อ
+  async cartConfirm(id: number, body: UpdateCaetDto) {
+    try {
+      const { orderId } = body;
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'sid')
+        .where('cart.user = :id', { id: id })
+        .andWhere('sid.id  = :id', { id: 1 })
+        .andWhere('cart.orderId = :orderId', { orderId: orderId })
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          await this.cartRepository.update(data.id, { statusId: 2 });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //admin กดยืนยัน
+  async cartSuscess(id: number, body: UpdateCaetDto) {
+    try {
+      const { orderId } = body;
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'sid')
+        .where('cart.user = :id', { id: id })
+        .andWhere('sid.id  = :id', { id: 1 })
+        .andWhere('cart.orderId = :orderId', { orderId: orderId })
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          await this.cartRepository.update(data.id, { statusId: 3 });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async findOrderForAdmin() {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.status', 'status')
+        .leftJoinAndSelect('cart.user', 'user')
         .andWhere('status.id = :id', { id: 2 })
+        .groupBy('cart.id')
+        .addGroupBy('user.id')
+        .addGroupBy('status.id')
+        .getMany();
+      return queryBuilder;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //ประวัติการสั่งซื้อ user
+  async orderHistory(id: number) {
+    try {
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.statusId', 'sid')
+        .where('cart.user = :id', { id })
+        .andWhere('cart.sid  = :id', { id: 3 })
         .groupBy('cart.orderId')
         .getMany();
       return queryBuilder;

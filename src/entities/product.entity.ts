@@ -22,10 +22,10 @@ import { Exclude, Expose } from 'class-transformer';
 
 @Entity('product')
 export class Product extends Base {
-  @Column({ length: 150 })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   name: string;
 
-  @Column({ length: 150 })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   detail: string;
 
   @Column({ nullable: true })

@@ -37,6 +37,6 @@ export class Register {
   @ApiProperty()
   password: string;
 
-  @ApiProperty()
-  roleId: number;
+  // @ApiProperty()
+  // roleId: number;
 }

@@ -6,11 +6,12 @@ import {
   Get,
   ParseIntPipe,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { Product } from 'src/entities/product.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateCartDto } from './dto/create-cart.dto';
+import { CreateCartDto, UpdateCaetDto } from './dto/create-cart.dto';
 
 @ApiTags('Cart')
 @Controller('')
@@ -26,34 +27,43 @@ export class CartController {
     }
   }
 
-  @Post('cart-confirm')
-  async cartConfirm(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() orderId: string,
-  ) {
-    try {
-      return await this.cartService.cartConfirm(id, orderId);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Post('cart-confirm')
-  async cartSuscess(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() orderId: string,
-  ) {
-    try {
-      return await this.cartService.cartSuscess(id, orderId);
-    } catch (error) {
-      throw error;
-    }
-  }
-
   @Get('cart/:id')
   async getCart(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.cartService.findCartByOrderId(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get('cart-for-admin')
+  async getOrderForAdmin() {
+    try {
+      return await this.cartService.findOrderForAdmin();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Patch('cart-confirm/:id')
+  async cartConfirm(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCaetDto,
+  ) {
+    try {
+      return await this.cartService.cartConfirm(id, body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Patch('cart-success/:id')
+  async cartSuscess(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCaetDto,
+  ) {
+    try {
+      return await this.cartService.cartSuscess(id, body);
     } catch (error) {
       throw error;
     }

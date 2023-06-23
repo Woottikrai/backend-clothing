@@ -17,13 +17,14 @@ export class UserService {
 
   async registerUser(body: Register): Promise<User> {
     try {
-      const { name, email, password, roleId } = body;
+      const { name, email, password } = body;
       const hashPassWord = await this.hashPassWord(password);
+      const userRole = 1;
       const registerUser = await this.userRepository.save({
         name: name,
         email: email,
         password: hashPassWord,
-        roleId: roleId,
+        roleId: userRole,
       });
       return registerUser;
     } catch (error) {
