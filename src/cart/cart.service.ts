@@ -159,13 +159,13 @@ export class CartService {
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.status', 'status')
         .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('product.size', 's')
+        .leftJoinAndSelect('product.color', 'color')
+        .leftJoinAndSelect('product.producttype', 'p')
+        .leftJoinAndSelect('product.suitability', 'suitability')
         .leftJoinAndSelect('cart.user', 'user')
         .andWhere('status.id = :id', { id: 2 })
-        .groupBy('cart.orderId')
-        .addGroupBy('cart.id')
-        .addGroupBy('user.id')
-        .addGroupBy('status.id')
-        .addGroupBy('product.id')
+
         .getMany();
       return queryBuilder;
     } catch (error) {
