@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from 'src/entities/cart.entity';
-import { And, QueryBuilder, Repository } from 'typeorm';
+import { And, QueryBuilder, Repository, getConnection } from 'typeorm';
 import { CreateCartDto, UpdateCaetDto } from './dto/create-cart.dto';
 import { Product } from 'src/entities/product.entity';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class CartService {
@@ -157,11 +158,14 @@ export class CartService {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.status', 'status')
+        .leftJoinAndSelect('cart.product', 'product')
         .leftJoinAndSelect('cart.user', 'user')
         .andWhere('status.id = :id', { id: 2 })
-        .groupBy('cart.id')
+        .groupBy('cart.orderId')
+        .addGroupBy('cart.id')
         .addGroupBy('user.id')
         .addGroupBy('status.id')
+        .addGroupBy('product.id')
         .getMany();
       return queryBuilder;
     } catch (error) {
@@ -174,10 +178,13 @@ export class CartService {
     try {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.statusId', 'sid')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.status', 'status')
         .where('cart.user = :id', { id })
-        .andWhere('cart.sid  = :id', { id: 3 })
-        .groupBy('cart.orderId')
+        .andWhere('status.id  = :id', { id: 3 })
+        .groupBy('cart.id')
+        .addGroupBy('product.id')
+        .addGroupBy('status.id')
         .getMany();
       return queryBuilder;
     } catch (error) {

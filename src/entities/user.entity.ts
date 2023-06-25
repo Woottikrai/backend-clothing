@@ -44,7 +44,7 @@ export class User extends Base {
   roleId: number;
 
   @OneToMany(() => Cart, (cart) => cart.user, { cascade: true, nullable: true })
-  cart: Cart;
+  cart: Cart[];
   @Exclude()
   cartId: number;
 }

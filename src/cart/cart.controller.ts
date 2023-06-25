@@ -36,6 +36,15 @@ export class CartController {
     }
   }
 
+  @Get('orderhistory/:id')
+  async getOrderHis(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.cartService.orderHistory(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Get('cart-for-admin')
   async getOrderForAdmin() {
     try {
