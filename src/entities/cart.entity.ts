@@ -21,6 +21,9 @@ export class Cart extends Base {
   @Column()
   sumPrice: number;
 
+  @Column({ nullable: true })
+  img: string;
+
   @ManyToOne(() => Product, (product) => product.cart)
   product: Product;
   @Column()

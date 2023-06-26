@@ -1,29 +1,32 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCartDto {
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   quantity: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   sumPrice: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
+  img: string;
+
+  @ApiProperty({ nullable: true })
   productId: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   userId: number;
 }
 
 export class UpdateCaetDto {
-  @ApiProperty({ nullable: false })
+  @ApiProperty({ nullable: true })
   quantity?: number;
 
-  @ApiProperty({ nullable: false })
+  @ApiProperty({ nullable: true })
   sumPrice?: number;
 
-  @ApiProperty({ nullable: false })
+  @ApiProperty({ nullable: true })
   productId?: number;
 
-  @ApiProperty({ nullable: false })
+  @ApiProperty({ nullable: true })
   orderId?: string;
 }

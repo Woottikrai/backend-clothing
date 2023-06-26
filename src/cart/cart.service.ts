@@ -18,7 +18,7 @@ export class CartService {
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.status', 'status')
         .leftJoinAndSelect('cart.user', 'user')
-        .where('user.id = :id', { id })
+        .where('cart.userId = :userId', { userId: id })
         .andWhere('cart.status = :id', { id: 1 });
       return await queryBuilder.getOne();
     } catch (error) {
@@ -85,13 +85,14 @@ export class CartService {
       const queryBuilder = this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
         .leftJoinAndSelect('product.size', 'size')
         .leftJoinAndSelect('product.producttype', 'type')
         .leftJoinAndSelect('product.color', 'c')
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
-        .where('status.Id = :id', { id: 1 })
-        .andWhere('cart.userId = :id', { id });
+        .where('status.id = :id', { id: 1 })
+        .andWhere('cart.userId = :userId', { userId: id });
 
       return await queryBuilder.getMany();
     } catch (error) {
@@ -99,7 +100,7 @@ export class CartService {
     }
   }
 
-  // user ยืนยันการสั่งซื้อ
+  // user ยืนยันการสั่งซื้อ กดที่ cart
   async cartConfirm(id: number, body: UpdateCaetDto) {
     try {
       const { orderId } = body;
@@ -111,7 +112,7 @@ export class CartService {
         .leftJoinAndSelect('product.color', 'c')
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'sid')
-        .where('cart.user = :id', { id: id })
+        .where('cart.userId = :userId', { userId: id })
         .andWhere('sid.id  = :id', { id: 1 })
         .andWhere('cart.orderId = :orderId', { orderId: orderId })
         .getMany();
@@ -127,7 +128,7 @@ export class CartService {
   }
 
   //admin กดยืนยัน
-  async cartSuscess(id: number, body: UpdateCaetDto) {
+  async cartSuscess(body: UpdateCaetDto) {
     try {
       const { orderId } = body;
       const queryBuilder = await this.cartRepository
@@ -138,8 +139,7 @@ export class CartService {
         .leftJoinAndSelect('product.color', 'c')
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'sid')
-        .where('cart.user = :id', { id: id })
-        .andWhere('sid.id  = :id', { id: 1 })
+        .andWhere('sid.id  = :id', { id: 2 })
         .andWhere('cart.orderId = :orderId', { orderId: orderId })
         .getMany();
 
@@ -179,12 +179,62 @@ export class CartService {
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
-        .where('cart.user = :id', { id })
-        .andWhere('status.id  = :id', { id: 3 })
-        .groupBy('cart.id')
-        .addGroupBy('product.id')
-        .addGroupBy('status.id')
+        .where('status.id = :id', { id: 2 })
+        .andWhere('cart.userId = :userId', { userId: id });
+      return queryBuilder.getMany();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //ยกเลิกคำสั่งซื้อ
+  async deleteOrder(id: number, body: UpdateCaetDto) {
+    try {
+      const { orderId } = body;
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('status.id = :id', { id: 2 })
+        .andWhere('cart.userId = :userId', { userId: id })
+        .andWhere('cart.orderId = :ortderId', { userId: orderId })
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          await this.cartRepository.softRemove({ id: data.id });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //ประวัติการขาย
+  async findOrderHistoryAdmin() {
+    try {
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.status', 'status')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('product.size', 's')
+        .leftJoinAndSelect('product.color', 'color')
+        .leftJoinAndSelect('product.producttype', 'p')
+        .leftJoinAndSelect('product.suitability', 'suitability')
+        .leftJoinAndSelect('cart.user', 'user')
+        .andWhere('status.id = :id', { id: 3 })
+
         .getMany();
       return queryBuilder;
     } catch (error) {

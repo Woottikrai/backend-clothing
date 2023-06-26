@@ -54,6 +54,15 @@ export class CartController {
     }
   }
 
+  @Get('order-history-admin')
+  async findOrderHistoryAdmin() {
+    try {
+      return await this.cartService.findOrderHistoryAdmin();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Patch('cart-confirm/:id')
   async cartConfirm(
     @Param('id', ParseIntPipe) id: number,
@@ -66,13 +75,10 @@ export class CartController {
     }
   }
 
-  @Patch('cart-success/:id')
-  async cartSuscess(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateCaetDto,
-  ) {
+  @Patch('cart-success')
+  async cartSuscess(@Body() body: UpdateCaetDto) {
     try {
-      return await this.cartService.cartSuscess(id, body);
+      return await this.cartService.cartSuscess(body);
     } catch (error) {
       throw error;
     }
@@ -82,6 +88,18 @@ export class CartController {
   async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.cartService.deleteFromCart(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-order/:id')
+  async deleteOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCaetDto,
+  ) {
+    try {
+      return await this.cartService.deleteOrder(id, body);
     } catch (error) {
       throw error;
     }
