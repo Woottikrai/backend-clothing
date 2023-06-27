@@ -19,7 +19,7 @@ export class UserService {
     try {
       const { name, email, password } = body;
       const hashPassWord = await this.hashPassWord(password);
-      const userRole = 1;
+      const userRole = 2;
       const registerUser = await this.userRepository.save({
         name: name,
         email: email,

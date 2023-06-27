@@ -84,6 +84,18 @@ export class CartController {
     }
   }
 
+  @Patch('upload-slip/:id')
+  async uploadslip(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCaetDto,
+  ) {
+    try {
+      return await this.cartService.uploadSlip(id, body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Delete('delete-from-cart/:id')
   async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
     try {

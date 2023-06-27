@@ -176,7 +176,7 @@ export class CartService {
   //ประวัติการสั่งซื้อ user
   async orderHistory(id: number) {
     try {
-      const queryBuilder = await this.cartRepository
+      const queryBuilder = this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.product', 'product')
         .leftJoinAndSelect('cart.user', 'user')
@@ -187,7 +187,35 @@ export class CartService {
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.id = :id', { id: 2 })
         .andWhere('cart.userId = :userId', { userId: id });
-      return queryBuilder.getMany();
+      return await queryBuilder.getMany();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //upload slip
+  async uploadSlip(id: number, body: UpdateCaetDto) {
+    try {
+      const { img, orderId } = body;
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('status.id = :id', { id: 2 })
+        .andWhere('cart.userId = :userId', { userId: id })
+        .andWhere('cart.orderId = :orderId', { orderId: orderId })
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          await this.cartRepository.update(data.id, { img: img });
+        }
+      }
     } catch (error) {
       throw error;
     }
@@ -208,7 +236,7 @@ export class CartService {
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.id = :id', { id: 2 })
         .andWhere('cart.userId = :userId', { userId: id })
-        .andWhere('cart.orderId = :ortderId', { userId: orderId })
+        .andWhere('cart.orderId = :orderId', { orderId: orderId })
         .getMany();
 
       if (queryBuilder.length > 0) {

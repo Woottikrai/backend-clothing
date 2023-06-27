@@ -22,6 +22,9 @@ export class UpdateCaetDto {
   quantity?: number;
 
   @ApiProperty({ nullable: true })
+  img: string;
+
+  @ApiProperty({ nullable: true })
   sumPrice?: number;
 
   @ApiProperty({ nullable: true })
