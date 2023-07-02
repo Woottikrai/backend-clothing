@@ -20,7 +20,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  async createUser(@Body() body: Register) {
+  async createUser(@Body() body: CreateUserDto) {
     try {
       return await this.userService.registerUser(body);
     } catch (error) {

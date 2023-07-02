@@ -32,4 +32,10 @@ export class UpdateCaetDto {
 
   @ApiProperty({ nullable: true })
   orderId?: string;
+
+  @ApiProperty({ nullable: true })
+  userId: number;
+
+  @ApiProperty({ nullable: true })
+  note: string;
 }

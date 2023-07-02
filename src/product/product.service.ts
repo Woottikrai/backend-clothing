@@ -45,8 +45,16 @@ export class ProductService {
 
   async getProductAll(filter: FilterQueryProduct) {
     try {
-      const { producttype, suitability, color, getOffset, pagination, limit } =
-        filter;
+      const {
+        producttype,
+        suitability,
+        color,
+        getOffset,
+        pagination,
+        limit,
+        size,
+        name,
+      } = filter;
       const getProductAll = this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.size', 'pz')
@@ -72,8 +80,20 @@ export class ProductService {
         });
       }
 
+      if (size) {
+        getProductAll.andWhere('product.size =:size', {
+          size: size,
+        });
+      }
+
       if (pagination) {
         getProductAll.skip(getOffset(filter)).take(limit);
+      }
+
+      if (name) {
+        getProductAll.andWhere('product.name ILIKE :name', {
+          name: `%${name}%`,
+        });
       }
 
       return await getProductAll.getManyAndCount();

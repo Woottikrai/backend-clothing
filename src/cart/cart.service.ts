@@ -26,6 +26,37 @@ export class CartService {
     }
   }
 
+  async findProdcutInCart(userId: number) {
+    try {
+      const queryBuilder = this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.productId', 'pid')
+        .where('cart.userId = :userId', { userId });
+
+      return await queryBuilder.getMany();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findForUpdate(id: number, orderId: string, productId: number) {
+    try {
+      const queryBuilder = this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('cart.userId = :userId', { userId: id })
+        .andWhere('cart.productId = :productId', { productId })
+        .andWhere('cart.orderId = :orderId', { orderId })
+        .andWhere('cart.statusId = :statusId', { statusId: 1 });
+
+      return await queryBuilder.getOne();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async generateOriderId() {
     try {
       let result = '';
@@ -48,7 +79,13 @@ export class CartService {
     try {
       const { userId, productId, sumPrice, quantity } = body;
       let orderId = '';
+
       const cartOrder = await this.findCartOrder(userId);
+      const findForUpdate = await this.findForUpdate(
+        userId,
+        cartOrder?.orderId,
+        productId,
+      );
 
       if (cartOrder) {
         orderId = cartOrder.orderId;
@@ -57,14 +94,21 @@ export class CartService {
         orderId = result;
       }
 
-      return await this.cartRepository.save({
-        userId: userId,
-        productId: productId,
-        sumPrice: sumPrice,
-        orderId,
-        statusId: 1,
-        quantity,
-      });
+      if (findForUpdate) {
+        return await this.cartRepository.update(findForUpdate?.id, {
+          sumPrice: findForUpdate.sumPrice + sumPrice,
+          quantity: findForUpdate.quantity + quantity,
+        });
+      } else {
+        return await this.cartRepository.save({
+          userId: userId,
+          productId: productId,
+          sumPrice: sumPrice,
+          orderId,
+          statusId: 1,
+          quantity,
+        });
+      }
     } catch (error) {
       throw error;
     }
@@ -92,7 +136,8 @@ export class CartService {
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.id = :id', { id: 1 })
-        .andWhere('cart.userId = :userId', { userId: id });
+        .andWhere('cart.userId = :userId', { userId: id })
+        .orderBy('cart.CreateAt', 'DESC');
 
       return await queryBuilder.getMany();
     } catch (error) {
@@ -165,7 +210,7 @@ export class CartService {
         .leftJoinAndSelect('product.suitability', 'suitability')
         .leftJoinAndSelect('cart.user', 'user')
         .andWhere('status.id = :id', { id: 2 })
-
+        .orderBy('cart.CreateAt', 'ASC')
         .getMany();
       return queryBuilder;
     } catch (error) {
@@ -186,7 +231,9 @@ export class CartService {
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.id = :id', { id: 2 })
-        .andWhere('cart.userId = :userId', { userId: id });
+        .andWhere('cart.userId = :userId', { userId: id })
+        .orderBy('cart.CreateAt', 'DESC');
+
       return await queryBuilder.getMany();
     } catch (error) {
       throw error;
@@ -224,7 +271,7 @@ export class CartService {
   //ยกเลิกคำสั่งซื้อ
   async deleteOrder(id: number, body: UpdateCaetDto) {
     try {
-      const { orderId } = body;
+      const { orderId, note } = body;
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
         .leftJoinAndSelect('cart.product', 'product')
@@ -241,7 +288,10 @@ export class CartService {
 
       if (queryBuilder.length > 0) {
         for (const data of queryBuilder) {
-          await this.cartRepository.softRemove({ id: data.id });
+          await this.cartRepository.update(data.id, {
+            statusId: 4,
+            note: note,
+          });
         }
       }
     } catch (error) {
@@ -262,9 +312,31 @@ export class CartService {
         .leftJoinAndSelect('product.suitability', 'suitability')
         .leftJoinAndSelect('cart.user', 'user')
         .andWhere('status.id = :id', { id: 3 })
+        .orderBy('cart.CreateAt', 'DESC')
 
         .getMany();
       return queryBuilder;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async orderHistoryUser(id: number) {
+    try {
+      const queryBuilder = this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('status.id = :id', { id: 3 })
+        .orderBy('cart.CreateAt', 'DESC')
+
+        .andWhere('cart.userId = :userId', { userId: id });
+      return await queryBuilder.getMany();
     } catch (error) {
       throw error;
     }

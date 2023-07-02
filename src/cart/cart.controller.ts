@@ -62,6 +62,14 @@ export class CartController {
       throw error;
     }
   }
+  @Get('order-history-user/:id')
+  async orderHistoryUser(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.cartService.orderHistoryUser(id);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Patch('cart-confirm/:id')
   async cartConfirm(
@@ -96,22 +104,22 @@ export class CartController {
     }
   }
 
-  @Delete('delete-from-cart/:id')
-  async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.cartService.deleteFromCart(id);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Delete('delete-order/:id')
+  @Patch('delete-order/:id')
   async deleteOrder(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateCaetDto,
   ) {
     try {
       return await this.cartService.deleteOrder(id, body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-from-cart/:id')
+  async deleteFromCart(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.cartService.deleteFromCart(id);
     } catch (error) {
       throw error;
     }

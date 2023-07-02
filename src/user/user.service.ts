@@ -15,15 +15,17 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async registerUser(body: Register): Promise<User> {
+  async registerUser(body: CreateUserDto): Promise<User> {
     try {
-      const { name, email, password } = body;
+      const { name, email, password, address, tel } = body;
       const hashPassWord = await this.hashPassWord(password);
       const userRole = 2;
       const registerUser = await this.userRepository.save({
         name: name,
         email: email,
         password: hashPassWord,
+        address: address,
+        tel: tel,
         roleId: userRole,
       });
       return registerUser;

@@ -14,4 +14,12 @@ export class FilterQueryProduct extends CommonFilter {
   @ApiProperty({ required: false })
   @IsOptional()
   color: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  size: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  name: string;
 }

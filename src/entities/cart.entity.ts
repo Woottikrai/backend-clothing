@@ -44,4 +44,7 @@ export class Cart extends Base {
 
   @Column()
   orderId: string;
+
+  @Column({ nullable: true })
+  note: string;
 }

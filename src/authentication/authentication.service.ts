@@ -31,6 +31,7 @@ export class AuthenticationService {
     };
     return {
       accessToken: await this.jwtService.signAsync(payload),
+      profile: user,
     };
   }
 
