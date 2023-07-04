@@ -104,7 +104,19 @@ export class CartController {
     }
   }
 
-  @Patch('delete-order/:id')
+  @Patch('cancel-order/:id')
+  async canCelOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCaetDto,
+  ) {
+    try {
+      return await this.cartService.cancelOrder(id, body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-order/:id')
   async deleteOrder(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateCaetDto,

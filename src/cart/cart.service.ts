@@ -218,7 +218,7 @@ export class CartService {
     }
   }
 
-  //ประวัติการสั่งซื้อ user
+  //ประวัติการสั่งซื้อ user รอโอน
   async orderHistory(id: number) {
     try {
       const queryBuilder = this.cartRepository
@@ -260,7 +260,7 @@ export class CartService {
 
       if (queryBuilder.length > 0) {
         for (const data of queryBuilder) {
-          await this.cartRepository.update(data.id, { img: img });
+          await this.cartRepository.update(data.id, { img: img, statusId: 2 });
         }
       }
     } catch (error) {
@@ -270,6 +270,33 @@ export class CartService {
 
   //ยกเลิกคำสั่งซื้อ
   async deleteOrder(id: number, body: UpdateCaetDto) {
+    try {
+      const { orderId, note } = body;
+      const queryBuilder = await this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .leftJoinAndSelect('cart.user', 'user')
+        .leftJoinAndSelect('product.size', 'size')
+        .leftJoinAndSelect('product.producttype', 'type')
+        .leftJoinAndSelect('product.color', 'c')
+        .leftJoinAndSelect('product.suitability', 's')
+        .leftJoinAndSelect('cart.status', 'status')
+        .where('status.id = :id', { id: 2 })
+        .andWhere('cart.userId = :userId', { userId: id })
+        .andWhere('cart.orderId = :orderId', { orderId: orderId })
+        .getMany();
+
+      if (queryBuilder.length > 0) {
+        for (const data of queryBuilder) {
+          await this.cartRepository.softRemove({ id: data.id });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  //ยกเลิก order
+  async cancelOrder(id: number, body: UpdateCaetDto) {
     try {
       const { orderId, note } = body;
       const queryBuilder = await this.cartRepository
@@ -298,7 +325,6 @@ export class CartService {
       throw error;
     }
   }
-
   //ประวัติการขาย
   async findOrderHistoryAdmin() {
     try {
@@ -332,7 +358,9 @@ export class CartService {
         .leftJoinAndSelect('product.color', 'c')
         .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
-        .where('status.id = :id', { id: 3 })
+        .where('cart.status IN (:...statuses)', {
+          statuses: [3, 4],
+        })
         .orderBy('cart.CreateAt', 'DESC')
 
         .andWhere('cart.userId = :userId', { userId: id });
