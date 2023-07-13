@@ -246,12 +246,7 @@ export class CartService {
       const { img, orderId } = body;
       const queryBuilder = await this.cartRepository
         .createQueryBuilder('cart')
-        .leftJoinAndSelect('cart.product', 'product')
         .leftJoinAndSelect('cart.user', 'user')
-        .leftJoinAndSelect('product.size', 'size')
-        .leftJoinAndSelect('product.producttype', 'type')
-        .leftJoinAndSelect('product.color', 'c')
-        .leftJoinAndSelect('product.suitability', 's')
         .leftJoinAndSelect('cart.status', 'status')
         .where('status.id = :id', { id: 2 })
         .andWhere('cart.userId = :userId', { userId: id })

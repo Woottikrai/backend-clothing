@@ -6,6 +6,7 @@ import {
   Body,
   UseGuards,
   Get,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthenticationService } from './authentication.service';
@@ -29,6 +30,10 @@ export class AuthenticationController {
   @ApiBearerAuth()
   @Get('profile')
   async getProfile(@GetUser() user) {
-    return await this.authenticationService.getUser(user.sub);
+    try {
+      return await this.authenticationService.getUser(user.sub);
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
   }
 }

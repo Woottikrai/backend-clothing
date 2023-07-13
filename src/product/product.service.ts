@@ -60,40 +60,40 @@ export class ProductService {
         .leftJoinAndSelect('product.size', 'pz')
         .leftJoinAndSelect('product.producttype', 'pp')
         .leftJoinAndSelect('product.suitability', 'ps')
-        .leftJoinAndSelect('product.color', 'pc');
-
+        .leftJoinAndSelect('product.color', 'pc')
+        .orderBy('product.CreateAt', 'DESC');
       if (producttype) {
-        getProductAll.andWhere('product.producttype =:producttype', {
+        getProductAll.orWhere('product.producttype =:producttype', {
           producttype: producttype,
         });
       }
 
       if (suitability) {
-        getProductAll.andWhere('product.suitability =:suitability', {
+        getProductAll.orWhere('product.suitability =:suitability', {
           suitability: suitability,
         });
       }
 
       if (color) {
-        getProductAll.andWhere('product.color =:color', {
+        getProductAll.orWhere('product.color =:color', {
           color: color,
         });
       }
 
       if (size) {
-        getProductAll.andWhere('product.size =:size', {
+        getProductAll.orWhere('product.size =:size', {
           size: size,
+        });
+      }
+
+      if (name) {
+        getProductAll.orWhere('product.name ILIKE :name', {
+          name: `%${name}%`,
         });
       }
 
       if (pagination) {
         getProductAll.skip(getOffset(filter)).take(limit);
-      }
-
-      if (name) {
-        getProductAll.andWhere('product.name ILIKE :name', {
-          name: `%${name}%`,
-        });
       }
 
       return await getProductAll.getManyAndCount();
